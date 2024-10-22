@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Upload a File</h2>
+
+<!-- Display messages (e.g., errors or success) -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<!-- File upload form -->
+<form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+    <label for="file">Choose a file:</label>
+    <input type="file" id="file" name="file" required>
+    
+    <label for="password">Enter a password to encrypt the file:</label>
+    <input type="password" id="password" name="password" required>
+    
+    <button type="submit">Upload</button>
+</form>
+{% endblock %}

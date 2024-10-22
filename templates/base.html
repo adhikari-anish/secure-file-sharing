@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing System</title>
+</head>
+<body>
+    <header>
+        <nav>
+            {% if session['role'] == 'owner' %}
+                <a href="{{ url_for('owner_dashboard') }}">Owner Dashboard</a>
+                <a href="{{ url_for('upload_file') }}">Upload Files</a>
+                <a href="{{ url_for('list_files') }}">View Files</a>  <!-- Link to file list -->
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% elif session['role'] == 'requester' %}
+                <a href="{{ url_for('requester_dashboard') }}">Requester Dashboard</a>
+                <a href="{{ url_for('list_files') }}">View Files</a>  <!-- Link to file list -->
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+
+
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

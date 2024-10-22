@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Available Files</h2>
+
+{% if files %}
+    <ul>
+    {% for file in files %}
+        <li>
+            <strong>Filename:</strong> {{ file.original_filename }}
+            <br>
+            <strong>Owner:</strong> {{ file.owner }}
+            <br>
+
+            <!-- Show status -->
+            {% if file.request_exists and not file.approved %}
+            <span>Status: Pending</span>
+            {% elif file.approved %}
+            <span>Status: Approved</span>
+            {% else %}
+            <span>Status: No Request</span>
+            {% endif %}
+            </p>
+
+            <!-- Show Request Access form if user is a requester and access is not approved -->
+            {% if session['role'] == 'requester' and not file.request_exists and not file.access_approved %}
+                <form method="POST" action="{{ url_for('request_access', filename=file.original_filename) }}">
+                    <label for="public_key">Enter your RSA Public Key:</label>
+                    <textarea id="public_key" name="public_key" required></textarea>
+                    <button type="submit">Request Access</button>
+                </form>
+            {% endif %}
+
+            <!-- Show Approve Access form if user is the owner and the request is pending -->
+            {% if session['role'] == 'owner' and file.request_exists and not file.access_approved %}
+                <form method="POST" action="{{ url_for('approve_access', filename=file.original_filename) }}">
+                    <label for="file_password">Enter the file encryption password:</label>
+                    <input type="password" id="file_password" name="file_password" required>
+                    <button type="submit">Approve Access</button>
+                </form>
+            {% endif %}
+
+            <!-- Show Decrypt File form if the user is a requester and access is approved -->
+            {% if session['role'] == 'requester' and file.access_approved %}
+                <form method="POST" action="{{ url_for('decrypt_file_route', filename=file.original_filename) }}">
+                    <label for="private_key">Enter your RSA Private Key:</label>
+                    <textarea id="private_key" name="private_key" required></textarea>
+                    <button type="submit">Decrypt File</button>
+                </form>
+            {% endif %}
+
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No files available.</p>
+{% endif %}
+{% endblock %}

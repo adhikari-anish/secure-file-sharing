@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Download {{ filename }}</h2>
+
+<!-- Display messages (e.g., errors or success) -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<form method="POST" action="{{ url_for('download_file', filename=filename) }}">
+    <label for="password">Enter password to decrypt the file:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Download</button>
+</form>
+{% endblock %}
